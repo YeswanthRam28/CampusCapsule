@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+google-generativeai
+psycopg2-binary
+python-dotenv
+pydantic
+httpx
+passlib
+bcrypt==4.0.1
+python-jose[cryptography]
+python-multipart
+ultralytics
+opencv-python-headless
