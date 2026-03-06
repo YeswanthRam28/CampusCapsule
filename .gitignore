@@ -52,6 +52,7 @@ lerna-debug.log*
 *.pt
 *.pth
 *.onnx
+backend/models/
 
 # OS
 .DS_Store

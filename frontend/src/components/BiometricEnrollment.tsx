@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Fingerprint, Camera, ShieldCheck, RefreshCcw } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -8,16 +8,23 @@ export default function BiometricEnrollment({ username }: { username: string }) 
     const [isCapturing, setIsCapturing] = useState(false);
     const [isEnrolling, setIsEnrolling] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
     const startCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            if (videoRef.current) videoRef.current.srcObject = stream;
+            setMediaStream(stream);
             setIsCapturing(true);
         } catch (err) {
             console.error("Camera access denied:", err);
         }
     };
+
+    useEffect(() => {
+        if (videoRef.current && mediaStream) {
+            videoRef.current.srcObject = mediaStream;
+        }
+    }, [isCapturing, mediaStream]);
 
     const enroll = async () => {
         if (!videoRef.current || !canvasRef.current) return;
@@ -42,8 +49,8 @@ export default function BiometricEnrollment({ username }: { username: string }) 
         } finally {
             setIsEnrolling(false);
             setIsCapturing(false);
-            const stream = videoRef.current.srcObject as MediaStream;
-            stream?.getTracks().forEach(t => t.stop());
+            mediaStream?.getTracks().forEach(t => t.stop());
+            setMediaStream(null);
         }
     };
 

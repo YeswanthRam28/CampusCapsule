@@ -4,10 +4,12 @@ CampusCapsule is a high-tech, real-time campus safety and incident management en
 
 ## 🚀 Key Features
 
-### 🛡️ AI Sentinel (CCTV Analysis)
-- **Local Vision**: Powered by **YOLOv11** for sub-millisecond object detection.
-- **Auto-Intelligence**: Detects crowd panic, medical emergencies (falls), security intrusions, and abandoned objects without human intervention.
-- **Live HUD**: Real-time tactical overlay on camera feeds for security personnel.
+### 🛡️ AI Sentinel (Multimodal Incident Analysis)
+- **Local Vision**: Powered by **YOLOv11** for object detection and crowd counting.
+- **Audio Intelligence**: Employs **AST (Audio Spectrogram Transformer)** `ast-finetuned-audioset` to detect screams, alarms, and explosions.
+- **Motion Analytics**: Uses **VideoMAE** `videomae-base` to recognize complex human actions such as falling, running, or fighting.
+- **Fusion Engine**: **Random Forest** machine learning classifier fuses the metadata from Vision, Audio, and Motion to instantly classify the overriding incident (e.g. `CROWD_PANIC`, `FIRE`, `MEDICAL_EMERGENCY`).
+- **Auto-Intelligence**: Operates 100% locally with downloaded Hugging Face weights.
 
 ### 🧬 Biometric Sentinel (Face Auth)
 - **Secure Access**: Zero-knowledge facial verification using **Gemini 2.0 Flash**.
@@ -22,8 +24,8 @@ CampusCapsule is a high-tech, real-time campus safety and incident management en
 ## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite, Tailwind CSS, Framer Motion, Lucide React.
-- **Backend**: FastAPI, Python, Uvicorn.
-- **AI/ML**: YOLOv11 (Local Vision), Google Gemini 2.0 Flash (Cognitive Analysis).
+- **Backend**: FastAPI, Python, Uvicorn, Pandas, Scikit-learn.
+- **AI/ML**: YOLOv11 (Vision), AST Transformer (Audio), VideoMAE (Motion), Random Forest (Fusion), Google Gemini 2.0 Flash (Cognitive Analysis).
 - **Database**: NeonDB (Serverless PostgreSQL).
 - **Tracking**: HTML5 Geolocation API.
 

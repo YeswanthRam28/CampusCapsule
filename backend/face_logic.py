@@ -2,13 +2,17 @@ import os
 import json
 import base64
 import google.generativeai as genai
-from .models import IncidentIntake, IncidentClassification
+from models import IncidentIntake, IncidentClassification
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
 
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
+
 # Use Gemini for face verification
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 async def verify_face(reg_image_b64: str, login_image_b64: str):
     # reg_image_b64 is the stored reference

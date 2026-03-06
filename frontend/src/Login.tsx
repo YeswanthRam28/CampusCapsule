@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, User, Lock, ArrowRight, Fingerprint, Camera, RefreshCcw } from 'lucide-react';
@@ -12,6 +12,8 @@ export default function Login() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const navigate = useNavigate();
+
+    const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,12 +53,18 @@ export default function Login() {
         setIsFaceLogin(true);
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            if (videoRef.current) videoRef.current.srcObject = stream;
+            setMediaStream(stream);
         } catch (err) {
             setError("Camera access denied");
             setIsFaceLogin(false);
         }
     };
+
+    useEffect(() => {
+        if (videoRef.current && mediaStream) {
+            videoRef.current.srcObject = mediaStream;
+        }
+    }, [isFaceLogin, mediaStream]);
 
     const performFaceAuth = async () => {
         if (!videoRef.current || !canvasRef.current) return;
@@ -86,6 +94,7 @@ export default function Login() {
             // Stop camera
             const stream = videoRef.current.srcObject as MediaStream;
             stream?.getTracks().forEach(t => t.stop());
+            setMediaStream(null);
 
             navigate('/dashboard');
         } catch (err: any) {
@@ -93,6 +102,7 @@ export default function Login() {
             setIsFaceLogin(false);
             const stream = videoRef.current.srcObject as MediaStream;
             stream?.getTracks().forEach(t => t.stop());
+            setMediaStream(null);
         } finally {
             setIsLoading(false);
         }
@@ -131,6 +141,7 @@ export default function Login() {
                                     setIsFaceLogin(false);
                                     const stream = videoRef.current?.srcObject as MediaStream;
                                     stream?.getTracks().forEach(t => t.stop());
+                                    setMediaStream(null);
                                 }}
                                 className="py-3 bg-white/5 border border-white/10 text-white/40 text-[10px] uppercase font-bold rounded-lg"
                             >

@@ -46,46 +46,56 @@ async def analyze_cctv_frame(image_b64: str, location: str):
             suspicious_objects.append(coords)
 
     # 3. Apply Heuristics for Incidents
+    result = {
+        "detected": False,
+        "person_count": person_count,
+        "unauthorized_person": 1 if person_count > 0 and "Restricted" in location else 0,
+        "suspicious_object_count": len(suspicious_objects)
+    }
     
     # A. CROWD PANIC
     if person_count > 10:
-        return {
+        result.update({
             "detected": True,
             "incident_type": "CROWD_PANIC",
             "severity": "HIGH",
             "description": f"High density crowd detected ({person_count} persons). Potential stampede risk.",
             "location_specific": "Central Corridor"
-        }
+        })
+        return result
         
     # B. MEDICAL EMERGENCY
     if has_medical_emergency:
-        return {
+        result.update({
             "detected": True,
             "incident_type": "MEDICAL",
             "severity": "CRITICAL",
             "description": "Person lying on floor detected. Potential collapse or medical emergency.",
             "location_specific": "Floor Area"
-        }
+        })
+        return result
 
     # C. RESTRICTED AREA / SECURITY (Static logic for demo)
     # If person detected at unusual location or just any person in this 'Admin' zone
     if person_count > 0 and "Restricted" in location:
-        return {
+        result.update({
             "detected": True,
             "incident_type": "SECURITY",
             "severity": "MEDIUM",
             "description": "Unauthorized personnel detected in restricted security zone.",
             "location_specific": "Entry Point"
-        }
+        })
+        return result
 
     # D. ABANDONED OBJECT (If object exists and no person nearby - simplified)
     if len(suspicious_objects) > 0 and person_count == 0:
-        return {
+        result.update({
             "detected": True,
             "incident_type": "ABANDONED_OBJECT",
             "severity": "MEDIUM",
             "description": "Unattended baggage detected with no owner in vicinity.",
             "location_specific": "Wait Area"
-        }
+        })
+        return result
 
-    return {"detected": False}
+    return result

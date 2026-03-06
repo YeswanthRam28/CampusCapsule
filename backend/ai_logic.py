@@ -1,7 +1,7 @@
 import os
 import json
 import google.generativeai as genai
-from .models import IncidentIntake, IncidentClassification, ActionPlaybook
+from models import IncidentIntake, IncidentClassification, ActionPlaybook
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))

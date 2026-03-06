@@ -2,7 +2,7 @@ import os
 import json
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from .models import ProcessedIncident
+from models import ProcessedIncident
 from dotenv import load_dotenv
 
 # Load from root directory
